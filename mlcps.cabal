@@ -1,0 +1,41 @@
+cabal-version:      3.0
+name:               mlcps
+version:            0.1.0.0
+license:            MIT
+license-file:       LICENSE
+
+author:             kamome
+
+maintainer:         2038975825@qq.com
+
+category:           Language
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+
+common all
+    build-depends:    base ^>=4.17.2.1
+                      , mtl ^>=2.2.2
+                      , containers ^>=0.6.7 
+                      , pretty-simple ^>=4.1.2.0
+    ghc-options:      -Wall -fno-warn-incomplete-patterns
+    default-language: Haskell2010
+
+library
+  import:              all
+  hs-source-dirs:      src
+  exposed-modules:     ML.Ast
+                       CPS.Ast
+                       CPS.Trans
+                       Closure.Ast
+                       Closure.Trans
+                       Flat.Ast
+                       Flat.Trans
+                       Machine.Ast
+                       Machine.Trans
+                       Utils.Ident
+
+executable mlcps
+    import:           all
+    main-is:          Main.hs
+    hs-source-dirs:   app
+    build-depends:    mlcps
