@@ -1,8 +1,7 @@
-#include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 typedef int64_t value_t;
-typedef void (*func_t)();
+typedef void (*func_t)(value_t);
 #define MEM_SIZE 4096
 value_t allocTuple(int64_t n)
 {
