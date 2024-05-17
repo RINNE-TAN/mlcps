@@ -24,7 +24,8 @@ void main49(value_t z50)
     ((value_t *)z51)[0] = (value_t)env48;
     ((value_t *)z51)[1] = (value_t)k14;
     ((value_t *)z51)[2] = (value_t)x13;
-    ((func_t)fCode47)(z51);
+    GLOBAL_FUNC = fCode47;
+    GLOBAL_ARG = z51;
 }
 void kCode32(value_t z52)
 {
@@ -38,7 +39,8 @@ void kCode32(value_t z52)
     value_t z53 = (value_t)allocTuple(2);
     ((value_t *)z53)[0] = (value_t)env36;
     ((value_t *)z53)[1] = (value_t)x12;
-    ((func_t)kCode35)(z53);
+    GLOBAL_FUNC = kCode35;
+    GLOBAL_ARG = z53;
 }
 void kCode29(value_t z54)
 {
@@ -61,7 +63,8 @@ void kCode29(value_t z54)
     ((value_t *)z55)[0] = (value_t)env38;
     ((value_t *)z55)[1] = (value_t)k10;
     ((value_t *)z55)[2] = (value_t)x9;
-    ((func_t)fCode37)(z55);
+    GLOBAL_FUNC = fCode37;
+    GLOBAL_ARG = z55;
 }
 void kCode24(value_t z56)
 {
@@ -74,7 +77,8 @@ void kCode24(value_t z56)
     value_t z57 = (value_t)allocTuple(2);
     ((value_t *)z57)[0] = (value_t)env28;
     ((value_t *)z57)[1] = (value_t)x7;
-    ((func_t)kCode27)(z57);
+    GLOBAL_FUNC = kCode27;
+    GLOBAL_ARG = z57;
 }
 void kCode19(value_t z58)
 {
@@ -86,13 +90,15 @@ void kCode19(value_t z58)
     value_t z59 = (value_t)allocTuple(2);
     ((value_t *)z59)[0] = (value_t)env23;
     ((value_t *)z59)[1] = (value_t)x1;
-    ((func_t)kCode22)(z59);
+    GLOBAL_FUNC = kCode22;
+    GLOBAL_ARG = z59;
 }
 void kCode44(value_t z60)
 {
     value_t env45 = (value_t)((value_t *)z60)[0];
     value_t x15 = (value_t)((value_t *)z60)[1];
-    halt(x15);
+    GLOBAL_FUNC = (value_t)halt;
+    GLOBAL_ARG = x15;
 }
 void fCode16(value_t z61)
 {
@@ -129,18 +135,21 @@ void fCode16(value_t z61)
         value_t z62 = (value_t)allocTuple(2);
         ((value_t *)z62)[0] = (value_t)env41;
         ((value_t *)z62)[1] = (value_t)x39;
-        ((func_t)kCode40)(z62);
+        GLOBAL_FUNC = kCode40;
+        GLOBAL_ARG = z62;
     }
     else
     {
         value_t z63 = (value_t)allocTuple(2);
         ((value_t *)z63)[0] = (value_t)env43;
         ((value_t *)z63)[1] = (value_t)x39;
-        ((func_t)kCode42)(z63);
+        GLOBAL_FUNC = kCode42;
+        GLOBAL_ARG = z63;
     }
 }
 int main()
 {
-    main49(0);
+    GLOBAL_FUNC = (value_t)main49;
+    main_loop();
     return 0;
 }

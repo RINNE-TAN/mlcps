@@ -44,8 +44,12 @@ instance Disp Bind where
   display (Init x i y) = (PP.text x ! i <+> "=" <+> (PP.parens "value_t" <> PP.text y)) <> ";"
 
 instance Disp Trans where
-  display (Halt x) = "halt" @ PP.text x <> ";"
-  display (App f arg) = PP.parens (PP.parens "func_t" <> PP.text f) @ PP.text arg <> ";"
+  display (Halt x) =
+    "GLOBAL_FUNC = (value_t)halt;"
+      $+$ (PP.text "GLOBAL_ARG" <+> "=" <+> PP.text x) <> ";"
+  display (App f arg) =
+    (PP.text "GLOBAL_FUNC" <+> "=" <+> PP.text f) <> ";"
+      $+$ (PP.text "GLOBAL_ARG" <+> "=" <+> PP.text arg) <> ";"
   display (If0 x b1 b2) =
     "if" <+> PP.parens (PP.text x <+> "==" <+> PP.int 0)
       $+$ "{"
@@ -82,8 +86,9 @@ instance Disp Prog where
       $+$ display (m : f)
       $+$ PP.text "int main()"
       $+$ PP.text "{"
-      $+$ tab (PP.text (name m) @ PP.int 0 <> ";")
-      $+$ tab (PP.text "return 0;")
+      $+$ tab (("GLOBAL_FUNC" <+> "=" <+> PP.parens "value_t") <> PP.text (name m) <> ";")
+      $+$ tab "main_loop();"
+      $+$ tab "return 0;"
       $+$ PP.text "}"
     where
       name (Func fname _ _ _) = fname
