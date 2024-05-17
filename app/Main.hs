@@ -4,6 +4,7 @@ import qualified CPS.Trans as CPS
 import qualified Closure.Trans as Closure
 import qualified Flat.Trans as Flat
 import ML.Ast (Core (..))
+import qualified Machine.Pretty as PP
 import qualified Machine.Trans as Machine
 import Utils.Ident (PrimOp (..), runTrans)
 
@@ -30,5 +31,6 @@ main = do
           )
           (App (Var "sum") (Num 10))
   print ml
-  let flat = runTrans (CPS.trans ml >>= Closure.convert >>= Flat.hoist >>= Machine.codeGen)
-  print flat
+  let code = runTrans (CPS.trans ml >>= Closure.convert >>= Flat.hoist >>= Machine.codeGen)
+  let codeDisp = PP.display code
+  writeFile "runtime/main.c" (show codeDisp)
