@@ -30,3 +30,8 @@ void main_loop()
         ((func_t)GLOBAL_FUNC)(GLOBAL_ARG);
     }
 }
+value_t print(value_t x)
+{
+    printf("print: %ld\n", x);
+    return 0;
+}

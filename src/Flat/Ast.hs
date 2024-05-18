@@ -5,7 +5,7 @@ import Utils.Ident (Ident, PrimOp)
 data Prog = Prog Func [Func]
   deriving (Show)
 
-data Func = Func Ident [Ident] [Bind] Trans
+data Func = Func Ident Ident [Bind] Trans
   deriving (Show)
 
 data Bind = Bind Ident Value
@@ -22,7 +22,7 @@ data Value
   deriving (Show)
 
 data Trans
-  = App Ident [Ident]
+  = App Ident Ident
   | If0 Ident Trans Trans
   | Case Ident (Ident, Trans) (Ident, Trans)
   | Halt Ident

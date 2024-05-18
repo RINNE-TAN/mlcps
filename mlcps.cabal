@@ -31,9 +31,7 @@ library
                        Closure.Trans
                        Flat.Ast
                        Flat.Trans
-                       Machine.Ast
-                       Machine.Trans
-                       Machine.Pretty
+                       Flat.Pretty
                        Utils.Ident
 
 executable mlcps

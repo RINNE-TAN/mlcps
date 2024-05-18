@@ -9,8 +9,9 @@ type HoistResult = ([Func], [Bind], Trans)
 hoist :: Cl.CloTm -> TransM Prog
 hoist cl = do
   main <- fresh "main"
+  arg <- fresh "arg"
   (f, b, e) <- hoistExpr cl
-  return (Prog (Func main [] b e) f)
+  return (Prog (Func main arg b e) f)
 
 hoistV :: Cl.CloVal -> TransM Value
 hoistV Cl.Unit = return Unit
@@ -24,7 +25,8 @@ hoistExpr :: Cl.CloTm -> TransM HoistResult
 hoistExpr (Cl.LetVal x (Cl.Lam env k z k1) k2) = do
   (f1, b1, e1) <- hoistExpr k1
   (f2, b2, e2) <- hoistExpr k2
-  let fx = Func x [env, k, z] b1 e1
+  arg <- fresh "arg"
+  let fx = Func x arg ([Bind env (Proj 0 arg), Bind k (Proj 1 arg), Bind z (Proj 2 arg)] ++ b1) e1
   return (f1 ++ f2 ++ [fx], b2, e2)
 hoistExpr (Cl.LetVal x v k) = do
   (f, b, e) <- hoistExpr k
@@ -36,10 +38,15 @@ hoistExpr (Cl.LetProj x i y k) = do
 hoistExpr (Cl.LetCont k env x k1 k2) = do
   (f1, b1, e1) <- hoistExpr k1
   (f2, b2, e2) <- hoistExpr k2
-  let fk = Func k [env, x] b1 e1
+  arg <- fresh "arg"
+  let fk = Func k arg ([Bind env (Proj 0 arg), Bind x (Proj 1 arg)] ++ b1) e1
   return (f1 ++ f2 ++ [fk], b2, e2)
-hoistExpr (Cl.ContApp k env x) = return ([], [], App k [env, x])
-hoistExpr (Cl.FuncApp f env k x) = return ([], [], App f [env, k, x])
+hoistExpr (Cl.ContApp k env x) = do
+  arg <- fresh "arg"
+  return ([], [Bind arg (Tuple [env, x])], App k arg)
+hoistExpr (Cl.FuncApp f env k x) = do
+  arg <- fresh "arg"
+  return ([], [Bind arg (Tuple [env, k, x])], App f arg)
 hoistExpr (Cl.Case x (x1, k1) (x2, k2)) = do
   (f1, b1, e1) <- hoistExpr k1
   (f2, b2, e2) <- hoistExpr k2
@@ -54,6 +61,7 @@ hoistExpr (Cl.If0 x k1 k2) = do
 hoistExpr (Cl.LetFix f env k x k1 k2) = do
   (f1, b1, e1) <- hoistExpr k1
   (f2, b2, e2) <- hoistExpr k2
-  let ff = Func f [env, k, x] b1 e1
+  arg <- fresh "arg"
+  let ff = Func f arg ([Bind env (Proj 0 arg), Bind k (Proj 1 arg), Bind x (Proj 2 arg)] ++ b1) e1
   return (f1 ++ f2 ++ [ff], b2, e2)
 hoistExpr (Cl.Halt x) = return ([], [], Halt x)

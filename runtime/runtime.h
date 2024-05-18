@@ -10,6 +10,7 @@ value_t allocTuple(int64_t n);
 void halt(value_t x);
 extern value_t GLOBAL_FUNC;
 extern value_t GLOBAL_ARG;
+value_t print(value_t);
 void main_loop();
 
 #endif
