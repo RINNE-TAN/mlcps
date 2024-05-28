@@ -42,13 +42,12 @@ instance Disp Bind where
 instance Disp Trans where
   display (Halt x) =
     "GLOBAL_FUNC = (value_t)halt;"
-      $+$ ("GLOBAL_ARG" <+> "=" <+> PP.text x) <> ";"
+      $+$ ("REG_A0" <+> "=" <+> PP.text x) <> ";"
   display (App f args) =
     ("GLOBAL_FUNC" <+> "=" <+> PP.text f) <> ";"
-      $+$ ("GLOBAL_ARG" <+> "=" <+> "allocTuple" @ PP.int (length args)) <> ";"
       $+$ PP.vcat (finit <$> zip [0 ..] args)
     where
-      finit (i, y) = ("GLOBAL_ARG" ! i <+> "=" <+> (PP.parens "value_t" <> PP.text y)) <> ";"
+      finit (i, y) = (("REG_A" <> PP.int i) <+> "=" <+> (PP.parens "value_t" <> PP.text y)) <> ";"
   display (If0 x b1 b2) =
     "if" <+> PP.parens (PP.text x <+> "==" <+> PP.int 0)
       $+$ "{"
@@ -61,14 +60,14 @@ instance Disp Trans where
 
 instance Disp Func where
   display (Func f args binds b) =
-    "void" <+> (PP.text f <> PP.parens ("value_t" <+> "arg"))
+    "void" <+> (PP.text f <> PP.parens "")
       $+$ "{"
-      $+$ tab (display (finit <$> zip [0 ..] args))
+      $+$ tab (PP.vcat (finit <$> zip [0 ..] args))
       $+$ tab (display binds)
       $+$ tab (display b)
       $+$ "}"
     where
-      finit (i, arg) = Bind arg (Proj i "arg")
+      finit (i, arg) = "value_t" <+> PP.text arg <+> "=" <+> (("REG_A" <> PP.int i) <> ";")
 
 instance Disp Prog where
   display (Prog m f) =
@@ -76,7 +75,7 @@ instance Disp Prog where
       $+$ "#include \"runtime.h\""
       $+$ PP.vcat
         ( ( \(Func fname _ _ _) ->
-              "void" <+> (PP.text fname <> PP.parens ("value_t" <+> "arg") <> ";")
+              "void" <+> (PP.text fname <> PP.parens "" <> ";")
           )
             <$> (m : f)
         )
