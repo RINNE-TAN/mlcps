@@ -34,18 +34,21 @@ instance Disp Value where
 instance Disp Bind where
   display (Bind x (Tuple vs)) =
     ("value_t" <+> PP.text x <+> "=" <+> ("allocTuple" @ PP.int (length vs))) <> ";"
-      $+$ PP.vcat (f <$> zip [0 ..] vs)
+      $+$ PP.vcat (finit <$> zip [0 ..] vs)
     where
-      f (i, y) = (PP.text x ! i <+> "=" <+> (PP.parens "value_t" <> PP.text y)) <> ";"
+      finit (i, y) = (PP.text x ! i <+> "=" <+> (PP.parens "value_t" <> PP.text y)) <> ";"
   display (Bind x v) = ("value_t" <+> PP.text x <+> "=" <+> display v) <> ";"
 
 instance Disp Trans where
   display (Halt x) =
     "GLOBAL_FUNC = (value_t)halt;"
       $+$ ("GLOBAL_ARG" <+> "=" <+> PP.text x) <> ";"
-  display (App f arg) =
+  display (App f args) =
     ("GLOBAL_FUNC" <+> "=" <+> PP.text f) <> ";"
-      $+$ ("GLOBAL_ARG" <+> "=" <+> PP.text arg) <> ";"
+      $+$ ("GLOBAL_ARG" <+> "=" <+> "allocTuple" @ PP.int (length args)) <> ";"
+      $+$ PP.vcat (finit <$> zip [0 ..] args)
+    where
+      finit (i, y) = ("GLOBAL_ARG" ! i <+> "=" <+> (PP.parens "value_t" <> PP.text y)) <> ";"
   display (If0 x b1 b2) =
     "if" <+> PP.parens (PP.text x <+> "==" <+> PP.int 0)
       $+$ "{"
@@ -57,20 +60,23 @@ instance Disp Trans where
       $+$ "}"
 
 instance Disp Func where
-  display (Func f arg binds b) =
-    "void" <+> (PP.text f <> PP.parens ("value_t" <+> PP.text arg))
+  display (Func f args binds b) =
+    "void" <+> (PP.text f <> PP.parens ("value_t" <+> "arg"))
       $+$ "{"
+      $+$ tab (display (finit <$> zip [0 ..] args))
       $+$ tab (display binds)
       $+$ tab (display b)
       $+$ "}"
+    where
+      finit (i, arg) = Bind arg (Proj i "arg")
 
 instance Disp Prog where
   display (Prog m f) =
     "#include <stdio.h>"
       $+$ "#include \"runtime.h\""
       $+$ PP.vcat
-        ( ( \(Func fname arg _ _) ->
-              "void" <+> (PP.text fname <> PP.parens ("value_t" <+> PP.text arg) <> ";")
+        ( ( \(Func fname _ _ _) ->
+              "void" <+> (PP.text fname <> PP.parens ("value_t" <+> "arg") <> ";")
           )
             <$> (m : f)
         )

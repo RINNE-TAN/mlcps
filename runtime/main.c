@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include "runtime.h"
-void main56(value_t arg57);
-void kCode37(value_t arg62);
-void kCode34(value_t arg64);
-void kCode31(value_t arg67);
-void kCode26(value_t arg68);
-void kCode21(value_t arg69);
-void kCode51(value_t arg71);
-void fCode18(value_t arg72);
-void main56(value_t arg57)
+void main56(value_t arg);
+void kCode37(value_t arg);
+void kCode34(value_t arg);
+void kCode31(value_t arg);
+void kCode26(value_t arg);
+void kCode21(value_t arg);
+void kCode51(value_t arg);
+void fCode18(value_t arg);
+void main56(value_t arg)
 {
     value_t env20 = allocTuple(0);
     value_t sum = allocTuple(2);
@@ -21,32 +21,30 @@ void main56(value_t arg57)
     ((value_t *)k16)[1] = (value_t)env53;
     value_t fCode54 = ((value_t *)sum)[0];
     value_t env55 = ((value_t *)sum)[1];
-    value_t arg70 = allocTuple(3);
-    ((value_t *)arg70)[0] = (value_t)env55;
-    ((value_t *)arg70)[1] = (value_t)k16;
-    ((value_t *)arg70)[2] = (value_t)x15;
     GLOBAL_FUNC = fCode54;
-    GLOBAL_ARG = arg70;
+    GLOBAL_ARG = allocTuple(3);
+    ((value_t *)GLOBAL_ARG)[0] = (value_t)env55;
+    ((value_t *)GLOBAL_ARG)[1] = (value_t)k16;
+    ((value_t *)GLOBAL_ARG)[2] = (value_t)x15;
 }
-void kCode37(value_t arg62)
+void kCode37(value_t arg)
 {
-    value_t env38 = ((value_t *)arg62)[0];
-    value_t x12 = ((value_t *)arg62)[1];
+    value_t env38 = ((value_t *)arg)[0];
+    value_t x12 = ((value_t *)arg)[1];
     value_t k4 = ((value_t *)env38)[0];
     value_t x = ((value_t *)env38)[1];
     value_t x13 = x + x12;
     value_t kCode40 = ((value_t *)k4)[0];
     value_t env41 = ((value_t *)k4)[1];
-    value_t arg60 = allocTuple(2);
-    ((value_t *)arg60)[0] = (value_t)env41;
-    ((value_t *)arg60)[1] = (value_t)x13;
     GLOBAL_FUNC = kCode40;
-    GLOBAL_ARG = arg60;
+    GLOBAL_ARG = allocTuple(2);
+    ((value_t *)GLOBAL_ARG)[0] = (value_t)env41;
+    ((value_t *)GLOBAL_ARG)[1] = (value_t)x13;
 }
-void kCode34(value_t arg64)
+void kCode34(value_t arg)
 {
-    value_t env35 = ((value_t *)arg64)[0];
-    value_t _ = ((value_t *)arg64)[1];
+    value_t env35 = ((value_t *)arg)[0];
+    value_t _ = ((value_t *)arg)[1];
     value_t k4 = ((value_t *)env35)[0];
     value_t sum = ((value_t *)env35)[1];
     value_t x = ((value_t *)env35)[2];
@@ -60,17 +58,16 @@ void kCode34(value_t arg64)
     ((value_t *)k11)[1] = (value_t)env39;
     value_t fCode42 = ((value_t *)sum)[0];
     value_t env43 = ((value_t *)sum)[1];
-    value_t arg61 = allocTuple(3);
-    ((value_t *)arg61)[0] = (value_t)env43;
-    ((value_t *)arg61)[1] = (value_t)k11;
-    ((value_t *)arg61)[2] = (value_t)x10;
     GLOBAL_FUNC = fCode42;
-    GLOBAL_ARG = arg61;
+    GLOBAL_ARG = allocTuple(3);
+    ((value_t *)GLOBAL_ARG)[0] = (value_t)env43;
+    ((value_t *)GLOBAL_ARG)[1] = (value_t)k11;
+    ((value_t *)GLOBAL_ARG)[2] = (value_t)x10;
 }
-void kCode31(value_t arg67)
+void kCode31(value_t arg)
 {
-    value_t env32 = ((value_t *)arg67)[0];
-    value_t x3 = ((value_t *)arg67)[1];
+    value_t env32 = ((value_t *)arg)[0];
+    value_t x3 = ((value_t *)arg)[1];
     value_t k4 = ((value_t *)env32)[0];
     value_t sum = ((value_t *)env32)[1];
     value_t x = ((value_t *)env32)[2];
@@ -84,51 +81,48 @@ void kCode31(value_t arg67)
     value_t x14 = print(x);
     value_t kCode44 = ((value_t *)j8)[0];
     value_t env45 = ((value_t *)j8)[1];
-    value_t arg63 = allocTuple(2);
-    ((value_t *)arg63)[0] = (value_t)env45;
-    ((value_t *)arg63)[1] = (value_t)x14;
     GLOBAL_FUNC = kCode44;
-    GLOBAL_ARG = arg63;
+    GLOBAL_ARG = allocTuple(2);
+    ((value_t *)GLOBAL_ARG)[0] = (value_t)env45;
+    ((value_t *)GLOBAL_ARG)[1] = (value_t)x14;
 }
-void kCode26(value_t arg68)
+void kCode26(value_t arg)
 {
-    value_t env27 = ((value_t *)arg68)[0];
-    value_t x2 = ((value_t *)arg68)[1];
+    value_t env27 = ((value_t *)arg)[0];
+    value_t x2 = ((value_t *)arg)[1];
     value_t k4 = ((value_t *)env27)[0];
     value_t x7 = 0;
     value_t kCode29 = ((value_t *)k4)[0];
     value_t env30 = ((value_t *)k4)[1];
-    value_t arg59 = allocTuple(2);
-    ((value_t *)arg59)[0] = (value_t)env30;
-    ((value_t *)arg59)[1] = (value_t)x7;
     GLOBAL_FUNC = kCode29;
-    GLOBAL_ARG = arg59;
+    GLOBAL_ARG = allocTuple(2);
+    ((value_t *)GLOBAL_ARG)[0] = (value_t)env30;
+    ((value_t *)GLOBAL_ARG)[1] = (value_t)x7;
 }
-void kCode21(value_t arg69)
+void kCode21(value_t arg)
 {
-    value_t env22 = ((value_t *)arg69)[0];
-    value_t x1 = ((value_t *)arg69)[1];
+    value_t env22 = ((value_t *)arg)[0];
+    value_t x1 = ((value_t *)arg)[1];
     value_t k0 = ((value_t *)env22)[0];
     value_t kCode24 = ((value_t *)k0)[0];
     value_t env25 = ((value_t *)k0)[1];
-    value_t arg58 = allocTuple(2);
-    ((value_t *)arg58)[0] = (value_t)env25;
-    ((value_t *)arg58)[1] = (value_t)x1;
     GLOBAL_FUNC = kCode24;
-    GLOBAL_ARG = arg58;
+    GLOBAL_ARG = allocTuple(2);
+    ((value_t *)GLOBAL_ARG)[0] = (value_t)env25;
+    ((value_t *)GLOBAL_ARG)[1] = (value_t)x1;
 }
-void kCode51(value_t arg71)
+void kCode51(value_t arg)
 {
-    value_t env52 = ((value_t *)arg71)[0];
-    value_t x17 = ((value_t *)arg71)[1];
+    value_t env52 = ((value_t *)arg)[0];
+    value_t x17 = ((value_t *)arg)[1];
     GLOBAL_FUNC = (value_t)halt;
     GLOBAL_ARG = x17;
 }
-void fCode18(value_t arg72)
+void fCode18(value_t arg)
 {
-    value_t env19 = ((value_t *)arg72)[0];
-    value_t k0 = ((value_t *)arg72)[1];
-    value_t x = ((value_t *)arg72)[2];
+    value_t env19 = ((value_t *)arg)[0];
+    value_t k0 = ((value_t *)arg)[1];
+    value_t x = ((value_t *)arg)[2];
     value_t sum = allocTuple(2);
     ((value_t *)sum)[0] = (value_t)fCode18;
     ((value_t *)sum)[1] = (value_t)env19;
@@ -152,23 +146,21 @@ void fCode18(value_t arg72)
     value_t x46 = (value_t)NULL;
     value_t kCode47 = ((value_t *)k5)[0];
     value_t env48 = ((value_t *)k5)[1];
-    value_t arg65 = allocTuple(2);
-    ((value_t *)arg65)[0] = (value_t)env48;
-    ((value_t *)arg65)[1] = (value_t)x46;
     value_t kCode49 = ((value_t *)k6)[0];
     value_t env50 = ((value_t *)k6)[1];
-    value_t arg66 = allocTuple(2);
-    ((value_t *)arg66)[0] = (value_t)env50;
-    ((value_t *)arg66)[1] = (value_t)x46;
     if (x == 0)
     {
         GLOBAL_FUNC = kCode47;
-        GLOBAL_ARG = arg65;
+        GLOBAL_ARG = allocTuple(2);
+        ((value_t *)GLOBAL_ARG)[0] = (value_t)env48;
+        ((value_t *)GLOBAL_ARG)[1] = (value_t)x46;
     }
     else
     {
         GLOBAL_FUNC = kCode49;
-        GLOBAL_ARG = arg66;
+        GLOBAL_ARG = allocTuple(2);
+        ((value_t *)GLOBAL_ARG)[0] = (value_t)env50;
+        ((value_t *)GLOBAL_ARG)[1] = (value_t)x46;
     }
 }
 int main()
