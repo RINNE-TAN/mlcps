@@ -6,7 +6,6 @@
 typedef int64_t value_t;
 typedef void (*func_t)();
 
-value_t allocTuple(int64_t n);
 void halt();
 extern value_t GLOBAL_FUNC;
 extern value_t REG_A0;
@@ -25,6 +24,8 @@ extern value_t REG_T4;
 extern value_t REG_T5;
 extern value_t REG_T6;
 extern value_t REG_T7;
+extern value_t REG_SP;
+extern value_t REG_BP;
 value_t print(value_t);
 void main_loop();
 

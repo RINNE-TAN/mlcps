@@ -5,7 +5,7 @@ import Utils.Ident (Ident, PrimOp)
 data Prog = Prog Func [Func]
   deriving (Show)
 
-data Func = Func Ident Reg [Bind] Trans
+data Func = Func Ident Int [Bind] Trans
   deriving (Show)
 
 data Bind = Bind Reg Value
@@ -32,6 +32,5 @@ data Reg
   = AReg Int
   | TReg Int
   | Address Ident
-  | Alloc Reg Int
-  | Spill Reg Int
+  | Alloc Int
   deriving (Show, Eq, Ord)

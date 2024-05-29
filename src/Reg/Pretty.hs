@@ -24,7 +24,7 @@ instance Disp Reg where
   display (AReg i) = "REG_A" <> PP.int i
   display (TReg i) = "REG_T" <> PP.int i
   display (Address a) = PP.parens "value_t" <> PP.text a
-  display (Alloc reg i) = display reg ! i
+  display (Alloc i) = "REG_BP" ! i
 
 instance Disp Value where
   display Unit = PP.text "(value_t)NULL"
@@ -39,10 +39,11 @@ instance Disp Value where
 
 instance Disp Bind where
   display (Bind x (Tuple vs)) =
-    (display x <+> "=" <+> ("allocTuple" @ PP.int (length vs))) <> ";"
+    (display x <+> "=" <+> "REG_SP") <> ";"
       $+$ PP.vcat (finit <$> zip [0 ..] vs)
+      $+$ ("REG_SP" <+> "+=" <+> "sizeof(value_t)" <+> "*" <+> PP.int (length vs)) <> ";"
     where
-      finit (i, y) = (display x ! i <+> "=" <+> display y) <> ";"
+      finit (i, y) = ("REG_SP" ! i <+> "=" <+> display y) <> ";"
   display (Bind x v) = (display x <+> "=" <+> display v) <> ";"
 
 instance Disp Trans where
@@ -53,7 +54,7 @@ instance Disp Trans where
     ("GLOBAL_FUNC" <+> "=" <+> display f) <> ";"
       $+$ PP.vcat (finit <$> zip [0 ..] args)
     where
-      finit (i, y) = (("REG_A" <> PP.int i) <+> "=" <+> (PP.parens "value_t" <> display y)) <> ";"
+      finit (i, y) = (("REG_A" <> PP.int i) <+> "=" <+> display y) <> ";"
   display (If0 x b1 b2) =
     "if" <+> PP.parens (display x <+> "==" <+> PP.int 0)
       $+$ "{"
@@ -65,10 +66,11 @@ instance Disp Trans where
       $+$ "}"
 
 instance Disp Func where
-  display (Func f (Spill reg nAlloc) binds b) =
+  display (Func f nAlloc binds b) =
     "void" <+> (PP.text f <> PP.parens "")
       $+$ "{"
-      $+$ tab (display reg <+> "=" <+> ("allocTuple" @ PP.int nAlloc)) <> ";"
+      $+$ tab ("REG_BP" <+> "=" <+> "REG_SP") <> ";"
+      $+$ tab ("REG_SP" <+> "+=" <+> "sizeof(value_t)" <+> "*" <+> PP.int nAlloc) <> ";"
       $+$ tab (display binds)
       $+$ tab (display b)
       $+$ "}"

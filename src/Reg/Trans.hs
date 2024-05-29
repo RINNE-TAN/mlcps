@@ -18,7 +18,7 @@ rename maxN (Flat.Prog m fs) = Prog (renameF maxN m) (renameF maxN <$> fs)
 renameF :: Int -> Flat.Func -> Func
 renameF maxN (Flat.Func fname args binds trans) =
   Env.runEnv
-    (Func fname (Spill (TReg (maxN - 1)) nAlloc) <$> mapM renameB zipBinds <*> renameT trans)
+    (Func fname nAlloc <$> mapM renameB zipBinds <*> renameT trans)
     (initArg <$> zip [0 ..] args)
   where
     initArg (idx, arg) = (arg, AReg idx)
@@ -91,7 +91,7 @@ allocST maxN = foldl f (return Seq.empty)
     f recordsST cur = do
       records <- recordsST
       let actives = Seq.filter (activeRecord cur) records
-      if length actives == maxN - 1
+      if length actives == maxN
         -- spill in memory
         then
           let (spill, sReg) = spillRecord actives
@@ -103,10 +103,10 @@ allocST maxN = foldl f (return Seq.empty)
                 if end spill > end cur
                   then
                     return
-                      ( Seq.update (start spill) (spill, Alloc (TReg (maxN - 1)) nAlloc) records
+                      ( Seq.update (start spill) (spill, Alloc nAlloc) records
                           Seq.|> (cur, sReg)
                       )
-                  else return (records Seq.|> (cur, Alloc (TReg (maxN - 1)) nAlloc))
+                  else return (records Seq.|> (cur, Alloc nAlloc))
         -- alloc reg, find first unused reg
         else return (records Seq.|> (cur, TReg (head [x | x <- [0 ..], all (unused x) actives])))
 
