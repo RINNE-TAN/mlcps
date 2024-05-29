@@ -1,10 +1,10 @@
 # mlcps
-mlcps is a compiler that transforms a subset of the ML language into C language. It includes several optimizations such as CPS (Continuation-Passing Style) transformation, closure conversion, hoisting, and code generation. 
+mlcps is a compiler that transforms a subset of the ML language into C language. It includes several optimizations such as CPS (Continuation-Passing Style) transformation, closure conversion, hoisting, register spilling (Linear Scan Algorithm), and code generation. 
 # Example
 - **Input** :
 
     ```haskell
-    let ml =
+  let ml =
         LetFix
           "sum"
           "x"
@@ -14,11 +14,15 @@ mlcps is a compiler that transforms a subset of the ML language into C language.
               ( Prim
                   Add
                   [ Var "x",
-                    App
-                      (Var "sum")
-                      ( Prim
-                          Sub
-                          [Var "x", Num 1]
+                    Let
+                      "_"
+                      (Prim Print [Var "x"])
+                      ( App
+                          (Var "sum")
+                          ( Prim
+                              Sub
+                              [Var "x", Num 1]
+                          )
                       )
                   ]
               )
