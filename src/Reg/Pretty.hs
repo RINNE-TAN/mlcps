@@ -1,6 +1,6 @@
-module Flat.Pretty where
+module Reg.Pretty where
 
-import Flat.Ast (Bind (..), Func (..), Prog (..), Trans (..), Value (..))
+import Reg.Ast (Bind (..), Func (..), Prog (..), Reg (..), Trans (..), Value (..))
 import Text.PrettyPrint (Doc, ($+$), (<+>))
 import qualified Text.PrettyPrint as PP
 import Utils.Ident (PrimOp (..))
@@ -20,36 +20,42 @@ instance (Disp t) => (Disp [t]) where
 tab :: Doc -> Doc
 tab = PP.nest 4
 
+instance Disp Reg where
+  display (AReg i) = "REG_A" <> PP.int i
+  display (TReg i) = "REG_T" <> PP.int i
+  display (Address a) = PP.parens "value_t" <> PP.text a
+  display (Alloc reg i) = display reg ! i
+
 instance Disp Value where
   display Unit = PP.text "(value_t)NULL"
   display (Num i) = PP.int i
   display (Str s) = PP.text s
-  display (Proj i x) = PP.text x ! i
-  display (Prim Add [x, y]) = PP.text x <+> "+" <+> PP.text y
-  display (Prim Sub [x, y]) = PP.text x <+> "-" <+> PP.text y
-  display (Prim Mul [x, y]) = PP.text x <+> "*" <+> PP.text y
-  display (Prim Print [x]) = "print" @ PP.text x
-  display (Prim Int2Str [x]) = "toString" @ PP.text x
+  display (Proj i x) = display x ! i
+  display (Prim Add [x, y]) = display x <+> "+" <+> display y
+  display (Prim Sub [x, y]) = display x <+> "-" <+> display y
+  display (Prim Mul [x, y]) = display x <+> "*" <+> display y
+  display (Prim Print [x]) = "print" @ display x
+  display (Prim Int2Str [x]) = "toString" @ display x
 
 instance Disp Bind where
   display (Bind x (Tuple vs)) =
-    ("value_t" <+> PP.text x <+> "=" <+> ("allocTuple" @ PP.int (length vs))) <> ";"
+    (display x <+> "=" <+> ("allocTuple" @ PP.int (length vs))) <> ";"
       $+$ PP.vcat (finit <$> zip [0 ..] vs)
     where
-      finit (i, y) = (PP.text x ! i <+> "=" <+> (PP.parens "value_t" <> PP.text y)) <> ";"
-  display (Bind x v) = ("value_t" <+> PP.text x <+> "=" <+> display v) <> ";"
+      finit (i, y) = (display x ! i <+> "=" <+> display y) <> ";"
+  display (Bind x v) = (display x <+> "=" <+> display v) <> ";"
 
 instance Disp Trans where
   display (Halt x) =
     "GLOBAL_FUNC = (value_t)halt;"
-      $+$ ("REG_A0" <+> "=" <+> PP.text x) <> ";"
+      $+$ ("REG_A0" <+> "=" <+> display x) <> ";"
   display (App f args) =
-    ("GLOBAL_FUNC" <+> "=" <+> PP.text f) <> ";"
+    ("GLOBAL_FUNC" <+> "=" <+> display f) <> ";"
       $+$ PP.vcat (finit <$> zip [0 ..] args)
     where
-      finit (i, y) = (("REG_A" <> PP.int i) <+> "=" <+> (PP.parens "value_t" <> PP.text y)) <> ";"
+      finit (i, y) = (("REG_A" <> PP.int i) <+> "=" <+> (PP.parens "value_t" <> display y)) <> ";"
   display (If0 x b1 b2) =
-    "if" <+> PP.parens (PP.text x <+> "==" <+> PP.int 0)
+    "if" <+> PP.parens (display x <+> "==" <+> PP.int 0)
       $+$ "{"
       $+$ tab (display b1)
       $+$ "}"
@@ -59,15 +65,13 @@ instance Disp Trans where
       $+$ "}"
 
 instance Disp Func where
-  display (Func f args binds b) =
+  display (Func f (Spill reg nAlloc) binds b) =
     "void" <+> (PP.text f <> PP.parens "")
       $+$ "{"
-      $+$ tab (PP.vcat (finit <$> zip [0 ..] args))
+      $+$ tab (display reg <+> "=" <+> ("allocTuple" @ PP.int nAlloc)) <> ";"
       $+$ tab (display binds)
       $+$ tab (display b)
       $+$ "}"
-    where
-      finit (i, arg) = "value_t" <+> PP.text arg <+> "=" <+> (("REG_A" <> PP.int i) <> ";")
 
 instance Disp Prog where
   display (Prog m f) =
