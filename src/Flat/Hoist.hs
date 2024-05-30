@@ -1,4 +1,4 @@
-module Flat.Trans where
+module Flat.Hoist where
 
 import qualified Closure.Ast as Cl
 import Flat.Ast (Bind (..), Func (..), Prog (..), Trans (..), Value (..))

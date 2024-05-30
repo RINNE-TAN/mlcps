@@ -1,4 +1,4 @@
-module Reg.Trans where
+module Spill.Rename where
 
 import Control.Monad.State (State, get, put, runState)
 import Data.Foldable (maximumBy, toList)
@@ -7,13 +7,13 @@ import Data.Ord (comparing)
 import qualified Data.Sequence as Seq
 import Data.Set (Set, empty, fromList, member, singleton, union, (\\))
 import qualified Flat.Ast as Flat
-import Reg.Ast (Bind (..), Func (..), Prog (..), Reg (..), Trans (..), Value (..))
+import Spill.Ast (Alloc (..), Bind (..), Func (..), Prog (..), Trans (..), Value (..))
 import qualified Utils.Env as Env
-import Utils.Ident (Ident)
+import Utils.Ident (Ident, TransM)
 import Utils.List (findLastIndex)
 
-rename :: Int -> Flat.Prog -> Prog
-rename maxN (Flat.Prog m fs) = Prog (renameF maxN m) (renameF maxN <$> fs)
+rename :: Int -> Flat.Prog -> TransM Prog
+rename maxN (Flat.Prog m fs) = return (Prog (renameF maxN m) (renameF maxN <$> fs))
 
 renameF :: Int -> Flat.Func -> Func
 renameF maxN (Flat.Func fname args binds trans) =
@@ -26,25 +26,25 @@ renameF maxN (Flat.Func fname args binds trans) =
     (regs, nAlloc) = alloc maxN live
     zipBinds = zip binds (snd <$> toList regs)
 
-renameB :: (Flat.Bind, Reg) -> Env.EnvM Ident Reg Bind
+renameB :: (Flat.Bind, Alloc) -> Env.EnvM Ident Alloc Bind
 renameB (Flat.Bind x v, reg) = do
   nv <- renameV v
   Env.insert x reg
   return (Bind reg nv)
 
-renameT :: Flat.Trans -> Env.EnvM Ident Reg Trans
+renameT :: Flat.Trans -> Env.EnvM Ident Alloc Trans
 renameT (Flat.App f arg) = App <$> renameId f <*> mapM renameId arg
 renameT (Flat.If0 x t1 t2) = If0 <$> renameId x <*> renameT t1 <*> renameT t2
 renameT (Flat.Halt x) = Halt <$> renameId x
 
-renameId :: Ident -> Env.EnvM Ident Reg Reg
+renameId :: Ident -> Env.EnvM Ident Alloc Alloc
 renameId ident = do
   reg <- Env.lookup ident
   case reg of
     Just r -> return r
-    Nothing -> return (Address ident)
+    Nothing -> return (Label ident)
 
-renameV :: Flat.Value -> Env.EnvM Ident Reg Value
+renameV :: Flat.Value -> Env.EnvM Ident Alloc Value
 renameV Flat.Unit = return Unit
 renameV (Flat.Num i) = return (Num i)
 renameV (Flat.Str s) = return (Str s)
@@ -81,13 +81,13 @@ liveness binds trans = f <$> zip [0 ..] binds
 livenessProg :: Flat.Prog -> [[Linear]]
 livenessProg (Flat.Prog m f) = (\(Flat.Func _ _ binds trans) -> liveness binds trans) <$> (m : f)
 
-alloc :: Int -> [Linear] -> (Seq.Seq (Linear, Reg), Int)
+alloc :: Int -> [Linear] -> (Seq.Seq (Linear, Alloc), Int)
 alloc maxN linears = runState (allocST maxN linears) 0
 
-allocST :: Int -> [Linear] -> State Int (Seq.Seq (Linear, Reg))
+allocST :: Int -> [Linear] -> State Int (Seq.Seq (Linear, Alloc))
 allocST maxN = foldl f (return Seq.empty)
   where
-    f :: State Int (Seq.Seq (Linear, Reg)) -> Linear -> State Int (Seq.Seq (Linear, Reg))
+    f :: State Int (Seq.Seq (Linear, Alloc)) -> Linear -> State Int (Seq.Seq (Linear, Alloc))
     f recordsST cur = do
       records <- recordsST
       let actives = Seq.filter (activeRecord cur) records
@@ -103,10 +103,10 @@ allocST maxN = foldl f (return Seq.empty)
                 if end spill > end cur
                   then
                     return
-                      ( Seq.update (start spill) (spill, Alloc nAlloc) records
+                      ( Seq.update (start spill) (spill, Spill nAlloc) records
                           Seq.|> (cur, sReg)
                       )
-                  else return (records Seq.|> (cur, Alloc nAlloc))
+                  else return (records Seq.|> (cur, Spill nAlloc))
         -- alloc reg, find first unused reg
         else return (records Seq.|> (cur, TReg (head [x | x <- [0 ..], all (unused x) actives])))
 

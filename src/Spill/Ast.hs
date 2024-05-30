@@ -1,4 +1,4 @@
-module Reg.Ast where
+module Spill.Ast where
 
 import Utils.Ident (Ident, PrimOp)
 
@@ -8,29 +8,29 @@ data Prog = Prog Func [Func]
 data Func = Func Ident Int [Bind] Trans
   deriving (Show)
 
-data Bind = Bind Reg Value
+data Bind = Bind Alloc Value
   deriving (Show)
 
 data Value
   = Unit
   | Num Int
   | Str String
-  | Proj Int Reg
-  | Tuple [Reg]
-  | Tag Int Reg
-  | Prim PrimOp [Reg]
+  | Proj Int Alloc
+  | Tuple [Alloc]
+  | Tag Int Alloc
+  | Prim PrimOp [Alloc]
   deriving (Show)
 
 data Trans
-  = App Reg [Reg]
-  | If0 Reg Trans Trans
-  | Case Reg (Reg, Trans) (Reg, Trans)
-  | Halt Reg
+  = App Alloc [Alloc]
+  | If0 Alloc Trans Trans
+  | Case Alloc (Alloc, Trans) (Alloc, Trans)
+  | Halt Alloc
   deriving (Show)
 
-data Reg
+data Alloc
   = AReg Int
   | TReg Int
-  | Address Ident
-  | Alloc Int
+  | Label Ident
+  | Spill Int
   deriving (Show, Eq, Ord)

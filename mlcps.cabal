@@ -30,12 +30,12 @@ library
                        CPS.Ast
                        CPS.Trans
                        Closure.Ast
-                       Closure.Trans
+                       Closure.Clo
                        Flat.Ast
-                       Flat.Trans
-                       Reg.Ast
-                       Reg.Trans
-                       Reg.Pretty
+                       Flat.Hoist
+                       Spill.Ast
+                       Spill.Rename
+                       Spill.Pretty
                        Utils.Ident
                        Utils.List
                        Utils.Env

@@ -1,6 +1,6 @@
-module Reg.Pretty where
+module Spill.Pretty where
 
-import Reg.Ast (Bind (..), Func (..), Prog (..), Reg (..), Trans (..), Value (..))
+import Spill.Ast (Alloc (..), Bind (..), Func (..), Prog (..), Trans (..), Value (..))
 import Text.PrettyPrint (Doc, ($+$), (<+>))
 import qualified Text.PrettyPrint as PP
 import Utils.Ident (PrimOp (..))
@@ -20,11 +20,11 @@ instance (Disp t) => (Disp [t]) where
 tab :: Doc -> Doc
 tab = PP.nest 4
 
-instance Disp Reg where
+instance Disp Alloc where
   display (AReg i) = "REG_A" <> PP.int i
   display (TReg i) = "REG_T" <> PP.int i
-  display (Address a) = PP.parens "value_t" <> PP.text a
-  display (Alloc i) = "REG_BP" ! i
+  display (Label a) = PP.parens "value_t" <> PP.text a
+  display (Spill i) = "REG_BP" ! i
 
 instance Disp Value where
   display Unit = PP.text "(value_t)NULL"

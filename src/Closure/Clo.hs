@@ -1,4 +1,4 @@
-module Closure.Trans where
+module Closure.Clo where
 
 import qualified CPS.Ast as CPS
 import Closure.Ast (CloTm (..), CloVal (..))
@@ -25,15 +25,15 @@ freeH (CPS.Tuple xs) = fromList xs
 freeH (CPS.Tag _ x) = singleton x
 freeH (CPS.Lam k x e) = freeF e \\ fromList [k, x]
 
-convert :: CPS.CTm -> TransM CloTm
-convert (CPS.LetProj x i y k) = LetProj x i y <$> convert k
-convert (CPS.LetCont k x k1 k2) = do
+cloConv :: CPS.CTm -> TransM CloTm
+cloConv (CPS.LetProj x i y k) = LetProj x i y <$> cloConv k
+cloConv (CPS.LetCont k x k1 k2) = do
   let ys = toList (freeF k1 \\ singleton x)
   kCode <- fresh "kCode"
   env <- fresh "env"
   env1 <- fresh "env"
-  clok1 <- convert k1
-  clok2 <- convert k2
+  clok1 <- cloConv k1
+  clok2 <- cloConv k2
   return
     ( LetCont
         kCode
@@ -50,7 +50,7 @@ convert (CPS.LetCont k x k1 k2) = do
             )
         )
     )
-convert (CPS.ContApp k x) = do
+cloConv (CPS.ContApp k x) = do
   kCode <- fresh "kCode"
   env <- fresh "env"
   return
@@ -65,7 +65,7 @@ convert (CPS.ContApp k x) = do
             (ContApp kCode env x)
         )
     )
-convert (CPS.FuncApp f k x) = do
+cloConv (CPS.FuncApp f k x) = do
   fCode <- fresh "fCode"
   env <- fresh "env"
   return
@@ -80,25 +80,25 @@ convert (CPS.FuncApp f k x) = do
             (FuncApp fCode env k x)
         )
     )
-convert (CPS.Case x k1 k2) = do
+cloConv (CPS.Case x k1 k2) = do
   x1 <- fresh "x"
   x2 <- fresh "x"
-  clokx1 <- convert (CPS.ContApp k1 x1)
-  clokx2 <- convert (CPS.ContApp k2 x2)
+  clokx1 <- cloConv (CPS.ContApp k1 x1)
+  clokx2 <- cloConv (CPS.ContApp k2 x2)
   return (Case x (k1, clokx1) (k2, clokx2))
-convert (CPS.LetPrim x op ys k) = LetPrim x op ys <$> convert k
-convert (CPS.If0 x k1 k2) = do
+cloConv (CPS.LetPrim x op ys k) = LetPrim x op ys <$> cloConv k
+cloConv (CPS.If0 x k1 k2) = do
   x1 <- fresh "x"
-  clokx1 <- convert (CPS.ContApp k1 x1)
-  clokx2 <- convert (CPS.ContApp k2 x1)
+  clokx1 <- cloConv (CPS.ContApp k1 x1)
+  clokx2 <- cloConv (CPS.ContApp k2 x1)
   return (LetVal x1 Unit (If0 x clokx1 clokx2))
-convert (CPS.LetFix f k x k1 k2) = do
+cloConv (CPS.LetFix f k x k1 k2) = do
   let ys = toList (freeF k1 \\ fromList [f, k, x])
   fCode <- fresh "fCode"
   env <- fresh "env"
   env1 <- fresh "env"
-  clok1 <- convert k1
-  clok2 <- convert k2
+  clok1 <- cloConv k1
+  clok2 <- cloConv k2
   return
     ( LetFix
         fCode
@@ -120,18 +120,18 @@ convert (CPS.LetFix f k x k1 k2) = do
             )
         )
     )
-convert (CPS.LetVal x CPS.Unit k) = LetVal x Unit <$> convert k
-convert (CPS.LetVal x (CPS.Num i) k) = LetVal x (Num i) <$> convert k
-convert (CPS.LetVal x (CPS.Str s) k) = LetVal x (Str s) <$> convert k
-convert (CPS.LetVal x (CPS.Tuple xs) k) = LetVal x (Tuple xs) <$> convert k
-convert (CPS.LetVal x (CPS.Tag i y) k) = LetVal x (Tag i y) <$> convert k
-convert (CPS.LetVal x (CPS.Lam k z k1) k2) = do
+cloConv (CPS.LetVal x CPS.Unit k) = LetVal x Unit <$> cloConv k
+cloConv (CPS.LetVal x (CPS.Num i) k) = LetVal x (Num i) <$> cloConv k
+cloConv (CPS.LetVal x (CPS.Str s) k) = LetVal x (Str s) <$> cloConv k
+cloConv (CPS.LetVal x (CPS.Tuple xs) k) = LetVal x (Tuple xs) <$> cloConv k
+cloConv (CPS.LetVal x (CPS.Tag i y) k) = LetVal x (Tag i y) <$> cloConv k
+cloConv (CPS.LetVal x (CPS.Lam k z k1) k2) = do
   let ys = toList (freeF k1 \\ fromList [k, z])
   xCode <- fresh "xCode"
   env <- fresh "env"
   env1 <- fresh "env"
-  clok1 <- convert k1
-  clok2 <- convert k2
+  clok1 <- cloConv k1
+  clok2 <- cloConv k2
   return
     ( LetVal
         xCode
@@ -151,4 +151,4 @@ convert (CPS.LetVal x (CPS.Lam k z k1) k2) = do
             )
         )
     )
-convert (CPS.Halt x) = return (Halt x)
+cloConv (CPS.Halt x) = return (Halt x)

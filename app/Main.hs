@@ -1,11 +1,11 @@
 module Main where
 
 import qualified CPS.Trans as CPS
-import qualified Closure.Trans as Closure
-import qualified Flat.Trans as Flat
+import qualified Closure.Clo as Clo
+import qualified Flat.Hoist as Flat
 import ML.Ast (Core (..))
-import qualified Reg.Pretty as PP
-import qualified Reg.Trans as Reg
+import qualified Spill.Pretty as PP
+import qualified Spill.Rename as Spill
 import Utils.Ident (PrimOp (..), runTrans)
 
 main :: IO ()
@@ -35,7 +35,6 @@ main = do
           )
           (App (Var "sum") (Num 10))
   print ml
-  let code = runTrans (CPS.trans ml >>= Closure.convert >>= Flat.hoist)
-  let progRename = Reg.rename 3 code
-  let codeDisp = PP.display progRename
+  let code = runTrans (CPS.trans ml >>= Clo.cloConv >>= Flat.hoist >>= Spill.rename 3)
+  let codeDisp = PP.display code
   writeFile "runtime/main.c" (show codeDisp)
