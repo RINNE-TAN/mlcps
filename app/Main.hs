@@ -4,7 +4,8 @@ import qualified CPS.Trans as CPS
 import qualified Closure.Clo as Clo
 import qualified Flat.Hoist as Flat
 import ML.Ast (Core (..))
-import qualified Spill.Pretty as PP
+import qualified Machine.Lowering as Machine
+import qualified Machine.Pretty as PP
 import qualified Spill.Rename as Spill
 import Utils.Ident (PrimOp (..), runTrans)
 
@@ -35,6 +36,6 @@ main = do
           )
           (App (Var "sum") (Num 10))
   print ml
-  let code = runTrans (CPS.trans ml >>= Clo.cloConv >>= Flat.hoist >>= Spill.rename 3)
+  let code = runTrans (CPS.trans ml >>= Clo.cloConv >>= Flat.hoist >>= Spill.rename 3 >>= Machine.lowering)
   let codeDisp = PP.display code
   writeFile "runtime/main.c" (show codeDisp)

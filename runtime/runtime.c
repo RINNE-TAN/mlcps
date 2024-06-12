@@ -19,9 +19,12 @@ value_t REG_T4 = (value_t)NULL;
 value_t REG_T5 = (value_t)NULL;
 value_t REG_T6 = (value_t)NULL;
 value_t REG_T7 = (value_t)NULL;
+value_t REG_L0 = (value_t)NULL;
+value_t REG_L1 = (value_t)NULL;
+const value_t REG_ZERO = (value_t)0;
 value_t STACK[MEM_SIZE] = {0};
 value_t REG_SP = (value_t)&STACK;
-value_t REG_BP = (value_t)&STACK;
+value_t REG_S0 = (value_t)&STACK;
 void halt()
 {
     printf("halt with result: %ld\n", REG_A0);

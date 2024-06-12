@@ -25,7 +25,10 @@ extern value_t REG_T5;
 extern value_t REG_T6;
 extern value_t REG_T7;
 extern value_t REG_SP;
-extern value_t REG_BP;
+extern value_t REG_S0;
+extern value_t REG_L0;
+extern value_t REG_L1;
+extern const value_t REG_ZERO;
 value_t print(value_t);
 void main_loop();
 

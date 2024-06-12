@@ -35,7 +35,9 @@ library
                        Flat.Hoist
                        Spill.Ast
                        Spill.Rename
-                       Spill.Pretty
+                       Machine.Ast
+                       Machine.Lowering
+                       Machine.Pretty
                        Utils.Ident
                        Utils.List
                        Utils.Env
