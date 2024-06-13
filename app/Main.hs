@@ -21,15 +21,11 @@ main = do
               ( Prim
                   Add
                   [ Var "x",
-                    Let
-                      "_"
-                      (Prim Print [Var "x"])
-                      ( App
-                          (Var "sum")
-                          ( Prim
-                              Sub
-                              [Var "x", Num 1]
-                          )
+                    App
+                      (Var "sum")
+                      ( Prim
+                          Sub
+                          [Var "x", Num 1]
                       )
                   ]
               )
@@ -38,4 +34,4 @@ main = do
   print ml
   let code = runTrans (CPS.trans ml >>= Clo.cloConv >>= Flat.hoist >>= Spill.rename 3 >>= Machine.lowering)
   let codeDisp = PP.display code
-  writeFile "runtime/main.c" (show codeDisp)
+  writeFile "runtime/main.s" (show codeDisp)

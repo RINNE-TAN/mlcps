@@ -1,5 +1,4 @@
 dist
 dist-newstyle
 .vscode
-*.out
-*.s
+output
