@@ -33,6 +33,7 @@ instance Disp Inst where
   display (Init rd imm rs) = "sd" <+> display rs <+> "," <+> (rd ! imm)
   display (LoadLabel rd label) = "la" <+> display rd <+> "," <+> PP.text label
   display (AddImm rd rs imm) = "addi" <+> display rd <+> "," <+> display rs <+> "," <+> PP.int imm
+  display (Move rd rs) = "mv" <+> display rd <+> "," <+> display rs
   display (CPrint _) = undefined
 
 instance Disp LastInst where

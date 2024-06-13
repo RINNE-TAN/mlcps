@@ -29,7 +29,7 @@ lTrans (Spill.App f args) =
     ( do
         let saveAReg (i, alloc) = do
               reg <- lRand1 alloc
-              tell [AddImm (AReg i) reg 0]
+              tell [Move (AReg i) reg]
         traverse_ saveAReg (zip [0 ..] args)
         fReg <- lRand1 f
         return ([], Jump fReg)
@@ -50,7 +50,7 @@ lTrans (Spill.Halt x) = do
   return
     ( do
         reg <- lRand1 x
-        tell [AddImm (AReg 0) reg 0]
+        tell [Move (AReg 0) reg]
         return ([], Halt)
     )
 
@@ -60,7 +60,7 @@ lBind (Spill.Bind (Spill.AReg i) v) = lValue (AReg i) v
 lBind (Spill.Bind (Spill.TReg i) v) = lValue (TReg i) v
 
 lValue :: Reg -> Spill.Value -> InstW ()
-lValue rd Spill.Unit = tell [AddImm rd Zero 0]
+lValue rd Spill.Unit = tell [Move rd Zero]
 lValue rd (Spill.Num i) = tell [AddImm rd Zero i]
 lValue rd (Spill.Proj i alloc) = do
   reg <- lRand1 alloc
@@ -107,4 +107,4 @@ lRand2 alloc1 alloc2 = do
 
 allocInsts :: Reg -> Int -> InstW ()
 allocInsts _ 0 = return ()
-allocInsts rd size = tell [AddImm rd SP 0, AddImm SP SP (8 * size)]
+allocInsts rd size = tell [Move rd SP, AddImm SP SP (8 * size)]

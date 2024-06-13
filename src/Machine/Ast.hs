@@ -23,6 +23,7 @@ data Inst
   | Init Reg Int Reg -- M[rd + imm] = rs
   | LoadLabel Reg Ident -- rd = LABEL
   | AddImm Reg Reg Int -- rd = rs + imm
+  | Move Reg Reg -- rd = rs
   | CPrint Reg
 
 data LastInst
