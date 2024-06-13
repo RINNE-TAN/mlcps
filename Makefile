@@ -11,7 +11,7 @@ build: clean
 gencode: build
 	cabal exec mlcps
 asm: gencode
-	riscv64-linux-gnu-as -o $(MAIN_OBJ) $(ASM) 
+	riscv64-linux-gnu-as -g -o $(MAIN_OBJ) $(ASM) 
 ld: asm 
 	$(CC) -g -o $(EXE) $(MAIN_OBJ) -static -lc
 run: ld
