@@ -1,25 +1,22 @@
-CCriscv = riscv64-linux-gnu-gcc
-CC = gcc
-MAIN = runtime/main.c
-ASM = main.s runtime.s
-RUNTIME = runtime/runtime.c
+CC = riscv64-linux-gnu-gcc
+MAIN = runtime/main.s
+MAIN_OBJ = output/main.o
+EXE = output/main
+ASM = $(MAIN) runtime/runtime.s runtime/stack.s
+
 clean:
-	rm -f runtime/main.c a.out $(ASM)
+	rm -f $(MAIN) $(MAIN_OBJ) $(EXE)
 build: clean
 	cabal build
-run: build
+gencode: build
 	cabal exec mlcps
-
-asmc: run
-	$(CC) -S $(MAIN) $(RUNTIME)
-buildc: asmc
-	$(CC) -g $(ASM)
-runc: buildc
-	./a.out
-
-asmc-riscv: run 
-	$(CCriscv) -S $(MAIN) $(RUNTIME)
-buildc-riscv: asmc-riscv
-	$(CCriscv) -g -static $(ASM)
-runc-riscv: buildc-riscv
-	qemu-riscv64 ./a.out
+asm: gencode
+	riscv64-linux-gnu-as -o $(MAIN_OBJ) $(ASM) 
+ld: asm 
+	$(CC) -g -o $(EXE) $(MAIN_OBJ) -static -lc
+run: ld
+	qemu-riscv64 ./$(EXE)
+qemu: ld
+	qemu-riscv64 -g 1234 $(EXE)
+gdb:
+	gdb-multiarch -x gdbinit main
