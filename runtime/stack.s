@@ -2,7 +2,7 @@
     halt_format: .asciz "halt with result: %ld\n"
 .section .bss
     .align 4                
-    .skip 4096               
+    .skip 1048576               
 _stack_bottom:
-    .space 4096             
+    .space 1048576             
 _stack_top:

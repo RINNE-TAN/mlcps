@@ -6,24 +6,52 @@ mlcps is a compiler that transforms a subset of the ML language into RISC-V Asse
     ```haskell
   let ml =
         LetFix
-          "sum"
+          "filter"
           "x"
-          ( If0
-              (Var "x")
-              (Num 0)
-              ( Prim
-                  Add
-                  [ Var "x",
-                    App
-                      (Var "sum")
-                      ( Prim
-                          Sub
-                          [Var "x", Num 1]
+          ( Let
+              "num"
+              (Proj 0 (Var "x"))
+              ( Let
+                  "f"
+                  (Proj 1 (Var "x"))
+                  ( If0
+                      (App (Var "f") (Var "num"))
+                      ( App
+                          (Var "filter")
+                          ( Tuple
+                              [ Prim Sub [Var "num", Num 1],
+                                Var "f"
+                              ]
+                          )
                       )
-                  ]
+                      (Var "num")
+                  )
               )
           )
-          (App (Var "sum") (Num 10))
+          ( LetFix
+              "f"
+              "num"
+              ( LetFix
+                  "help"
+                  "i"
+                  ( If0
+                      (Var "i")
+                      (Num 0)
+                      ( If0
+                          ( Prim
+                              Sub
+                              [ Var "num",
+                                Prim Mul [Var "i", Var "i"]
+                              ]
+                          )
+                          (Num 1)
+                          (App (Var "help") (Prim Sub [Var "i", Num 1]))
+                      )
+                  )
+                  (App (Var "help") (Var "num"))
+              )
+              (App (Var "filter") (Tuple [Num 99, Var "f"]))
+          )
     ```
 - **Ouput**
 
