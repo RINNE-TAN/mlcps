@@ -14,33 +14,23 @@ main = do
   let ml =
         LetFix
           "filter"
-          "x"
-          ( Let
-              "num"
-              (Proj 0 (Var "x"))
-              ( Let
-                  "f"
-                  (Proj 1 (Var "x"))
-                  ( If0
-                      (App (Var "f") (Var "num"))
-                      ( App
-                          (Var "filter")
-                          ( Tuple
-                              [ Prim Sub [Var "num", Num 1],
-                                Var "f"
-                              ]
-                          )
-                      )
-                      (Var "num")
-                  )
+          ["num", "f"]
+          ( If0
+              (App (Var "f") [Var "num"])
+              ( App
+                  (Var "filter")
+                  [ Prim Sub [Var "num", Num 1],
+                    Var "f"
+                  ]
               )
+              (Var "num")
           )
           ( LetFix
               "f"
-              "num"
+              ["num"]
               ( LetFix
                   "help"
-                  "i"
+                  ["i"]
                   ( If0
                       (Var "i")
                       (Num 0)
@@ -52,12 +42,12 @@ main = do
                               ]
                           )
                           (Num 1)
-                          (App (Var "help") (Prim Sub [Var "i", Num 1]))
+                          (App (Var "help") [Prim Sub [Var "i", Num 1]])
                       )
                   )
-                  (App (Var "help") (Var "num"))
+                  (App (Var "help") [Var "num"])
               )
-              (App (Var "filter") (Tuple [Num 99, Var "f"]))
+              (App (Var "filter") [Num 99, Var "f"])
           )
   print ml
   let code = runTrans (CPS.trans ml >>= Clo.cloConv >>= Flat.hoist >>= Spill.rename 3 >>= Machine.lowering)

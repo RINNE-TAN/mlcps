@@ -12,12 +12,12 @@ data CTm
   = LetVal X CVal CTm
   | LetProj X Int X CTm
   | LetCont K X CTm CTm
-  | ContApp K X
-  | FuncApp F K X
+  | ContApp K [X]
+  | FuncApp F K [X]
   | Case X K K
   | LetPrim X PrimOp [X] CTm
   | If0 X K K
-  | LetFix F K X CTm CTm
+  | LetFix F K [X] CTm CTm
   | Halt X
   deriving (Show)
 

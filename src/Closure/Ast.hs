@@ -14,12 +14,12 @@ data CloTm
   = LetVal X CloVal CloTm
   | LetProj X Int X CloTm
   | LetCont K Env X CloTm CloTm
-  | ContApp K Env X
-  | FuncApp F Env K X
+  | ContApp K Env [X]
+  | FuncApp F Env K [X]
   | Case X (X, CloTm) (X, CloTm)
   | LetPrim X PrimOp [X] CloTm
   | If0 X CloTm CloTm
-  | LetFix F Env K X CloTm CloTm
+  | LetFix F Env K [X] CloTm CloTm
   | Halt X
   deriving (Show)
 

@@ -28,7 +28,8 @@ transCont ml cont = transContH ml
       transCont
         e1
         ( \z1 ->
-            transCont
+            traverseC
+              transCont
               e2
               ( \z2 -> do
                   k <- fresh "k"
@@ -62,11 +63,11 @@ transCont ml cont = transContH ml
     transContH (ML.Lam x e) = do
       f <- fresh "f"
       k <- fresh "k"
-      z <- transCont e (return . ContApp k)
+      z <- traverseC transCont [e] (return . ContApp k)
       LetVal f (Lam k x z) <$> cont f
     transContH (ML.Let x e1 e2) = do
       j <- fresh "j"
-      LetCont j x <$> transCont e2 cont <*> transCont e1 (return . ContApp j)
+      LetCont j x <$> transCont e2 cont <*> traverseC transCont [e1] (return . ContApp j)
     transContH (ML.Case e (x1, e1) (x2, e2)) =
       transCont
         e
@@ -76,8 +77,8 @@ transCont ml cont = transContH ml
             k1 <- fresh "k"
             k2 <- fresh "k"
             kx0 <- cont x0
-            z1 <- transCont e1 (return . ContApp k0)
-            z2 <- transCont e2 (return . ContApp k0)
+            z1 <- traverseC transCont [e1] (return . ContApp k0)
+            z2 <- traverseC transCont [e2] (return . ContApp k0)
             return
               ( LetCont
                   k0
@@ -106,7 +107,7 @@ transCont ml cont = transContH ml
         )
     transContH (ML.LetFix f x e1 e2) = do
       k <- fresh "k"
-      LetFix f k x <$> transCont e1 (return . ContApp k) <*> transCont e2 cont
+      LetFix f k x <$> traverseC transCont [e1] (return . ContApp k) <*> transCont e2 cont
     transContH (ML.If0 e e1 e2) =
       transCont
         e
@@ -118,8 +119,8 @@ transCont ml cont = transContH ml
             k1 <- fresh "k"
             k2 <- fresh "k"
             kx0 <- cont x0
-            z1 <- transCont e1 (return . ContApp k0)
-            z2 <- transCont e2 (return . ContApp k0)
+            z1 <- traverseC transCont [e1] (return . ContApp k0)
+            z2 <- traverseC transCont [e2] (return . ContApp k0)
             return
               ( LetCont
                   k0

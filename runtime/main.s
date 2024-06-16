@@ -2,48 +2,47 @@
 main:
     la s0 , _stack_bottom
     la sp , _stack_bottom
-    j main150
-main150:
+    j main134
+main134:
     mv s0 , sp
-    addi sp , sp , 16
+    addi sp , sp , 24
     mv t3 , sp
     addi sp , sp , 16
-    la t0 , fCode46
+    la t0 , fCode40
     sd t0 , 0(t3)
     sd t2 , 8(t3)
     mv t4 , sp
     addi sp , sp , 16
-    la t0 , fCode89
+    la t0 , fCode73
     sd t0 , 0(t4)
     sd t2 , 8(t4)
-    addi t2 , zero , 99
+    addi t1 , zero , 99
+    sd t1 , 0(s0)
     mv t1 , sp
     addi sp , sp , 16
-    sd t2 , 0(t1)
-    sd t4 , 8(t1)
-    sd t1 , 0(s0)
-    mv t4 , sp
-    addi sp , sp , 16
-    la t0 , kCode145
-    sd t0 , 0(t4)
-    sd t2 , 8(t4)
+    la t0 , kCode129
+    sd t0 , 0(t1)
+    sd t2 , 8(t1)
+    sd t1 , 8(s0)
     ld t2 , 0(t3)
     ld t1 , 8(t3)
-    sd t1 , 8(s0)
-    ld t0 , 8(s0)
+    sd t1 , 16(s0)
+    ld t0 , 16(s0)
     mv a0 , t0
-    mv a1 , t4
+    ld t0 , 8(s0)
+    mv a1 , t0
     ld t0 , 0(s0)
     mv a2 , t0
+    mv a3 , t4
     jr t2
-kCode66:
+kCode54:
     ld t2 , 0(a0)
     ld t3 , 0(t2)
     ld t4 , 8(t2)
     mv a0 , t4
     mv a1 , a1
     jr t3
-kCode73:
+kCode61:
     mv s0 , sp
     addi sp , sp , 8
     ld t2 , 0(a0)
@@ -55,50 +54,45 @@ kCode73:
     mv a0 , t0
     mv a1 , t3
     jr t4
-kCode63:
+kCode51:
     mv s0 , sp
-    addi sp , sp , 32
-    ld t2 , 0(a0)
-    ld t1 , 8(a0)
+    addi sp , sp , 24
+    ld t1 , 0(a0)
     sd t1 , 0(s0)
-    ld t1 , 16(a0)
+    ld t1 , 8(a0)
     sd t1 , 8(s0)
-    ld t3 , 24(a0)
-    addi t4 , zero , 1
-    sub t1 , t3 , t4
+    ld t4 , 16(a0)
+    ld t2 , 24(a0)
+    addi t3 , zero , 1
+    sub t1 , t2 , t3
     sd t1 , 16(s0)
-    mv t3 , sp
-    addi sp , sp , 16
-    ld t0 , 16(s0)
-    sd t0 , 0(t3)
-    sd t2 , 8(t3)
     mv t2 , sp
     addi sp , sp , 8
-    ld t0 , 8(s0)
-    sd t0 , 0(t2)
-    mv t4 , sp
+    sd t4 , 0(t2)
+    mv t3 , sp
     addi sp , sp , 16
-    la t0 , kCode66
-    sd t0 , 0(t4)
-    sd t2 , 8(t4)
-    ld t0 , 0(s0)
+    la t0 , kCode54
+    sd t0 , 0(t3)
+    sd t2 , 8(t3)
+    ld t0 , 8(s0)
     ld t2 , 0(t0)
+    ld t0 , 8(s0)
+    ld t4 , 8(t0)
+    mv a0 , t4
+    mv a1 , t3
+    ld t0 , 16(s0)
+    mv a2 , t0
     ld t0 , 0(s0)
-    ld t1 , 8(t0)
-    sd t1 , 24(s0)
-    ld t0 , 24(s0)
-    mv a0 , t0
-    mv a1 , t4
-    mv a2 , t3
+    mv a3 , t0
     jr t2
-kCode58:
+kCode46:
     ld t2 , 0(a0)
     ld t3 , 0(t2)
     ld t4 , 8(t2)
     mv a0 , t4
     mv a1 , a1
     jr t3
-kCode55:
+kCode43:
     mv s0 , sp
     addi sp , sp , 40
     ld t2 , 0(a0)
@@ -112,7 +106,7 @@ kCode55:
     sd t4 , 0(t3)
     mv t4 , sp
     addi sp , sp , 16
-    la t0 , kCode58
+    la t0 , kCode46
     sd t0 , 0(t4)
     sd t3 , 8(t4)
     mv t3 , sp
@@ -125,7 +119,7 @@ kCode55:
     sd t0 , 24(t3)
     mv t2 , sp
     addi sp , sp , 16
-    la t0 , kCode63
+    la t0 , kCode51
     sd t0 , 0(t2)
     sd t3 , 8(t2)
     mv t3 , sp
@@ -135,7 +129,7 @@ kCode55:
     sd t0 , 8(t3)
     mv t4 , sp
     addi sp , sp , 16
-    la t0 , kCode73
+    la t0 , kCode61
     sd t0 , 0(t4)
     sd t3 , 8(t4)
     mv t3 , zero
@@ -146,79 +140,27 @@ kCode55:
     ld t2 , 0(t4)
     ld t1 , 8(t4)
     sd t1 , 32(s0)
-    beq a1 , zero , block151
-    j block152
-block151:
+    beq a1 , zero , block135
+    j block136
+block135:
     ld t0 , 24(s0)
     mv a0 , t0
     mv a1 , t3
     ld t0 , 16(s0)
     jr t0
-block152:
+block136:
     ld t0 , 32(s0)
     mv a0 , t0
     mv a1 , t3
     jr t2
-kCode52:
-    mv s0 , sp
-    addi sp , sp , 8
-    ld t2 , 0(a0)
-    ld t3 , 8(a0)
-    ld t1 , 16(a0)
-    sd t1 , 0(s0)
-    mv t4 , sp
-    addi sp , sp , 32
-    sd a1 , 0(t4)
-    sd t2 , 8(t4)
-    sd t3 , 16(t4)
-    ld t0 , 0(s0)
-    sd t0 , 24(t4)
-    mv t2 , sp
-    addi sp , sp , 16
-    la t0 , kCode55
-    sd t0 , 0(t2)
-    sd t4 , 8(t2)
-    ld t3 , 0(a1)
-    ld t4 , 8(a1)
-    mv a0 , t4
-    mv a1 , t2
-    ld t0 , 0(s0)
-    mv a2 , t0
-    jr t3
-kCode49:
-    mv s0 , sp
-    addi sp , sp , 16
-    ld t2 , 0(a0)
-    ld t3 , 8(a0)
-    ld t1 , 16(a0)
-    sd t1 , 0(s0)
-    mv t4 , sp
-    addi sp , sp , 24
-    sd t2 , 0(t4)
-    sd t3 , 8(t4)
-    sd a1 , 16(t4)
-    mv t2 , sp
-    addi sp , sp , 16
-    la t0 , kCode52
-    sd t0 , 0(t2)
-    sd t4 , 8(t2)
-    ld t0 , 0(s0)
-    ld t3 , 8(t0)
-    ld t4 , 0(t2)
-    ld t1 , 8(t2)
-    sd t1 , 8(s0)
-    ld t0 , 8(s0)
-    mv a0 , t0
-    mv a1 , t3
-    jr t4
-kCode121:
+kCode105:
     ld t2 , 0(a0)
     ld t3 , 0(t2)
     ld t4 , 8(t2)
     mv a0 , t4
     mv a1 , a1
     jr t3
-kCode118:
+kCode102:
     mv s0 , sp
     addi sp , sp , 16
     ld t1 , 0(a0)
@@ -233,7 +175,7 @@ kCode118:
     sd t4 , 0(t2)
     mv t3 , sp
     addi sp , sp , 16
-    la t0 , kCode121
+    la t0 , kCode105
     sd t0 , 0(t3)
     sd t2 , 8(t3)
     ld t0 , 0(s0)
@@ -245,7 +187,7 @@ kCode118:
     ld t0 , 8(s0)
     mv a2 , t0
     jr t2
-kCode113:
+kCode97:
     mv s0 , sp
     addi sp , sp , 8
     ld t2 , 0(a0)
@@ -257,14 +199,14 @@ kCode113:
     mv a0 , t0
     mv a1 , t3
     jr t4
-kCode108:
+kCode92:
     ld t2 , 0(a0)
     ld t3 , 0(t2)
     ld t4 , 8(t2)
     mv a0 , t4
     mv a1 , a1
     jr t3
-kCode105:
+kCode89:
     mv s0 , sp
     addi sp , sp , 48
     ld t1 , 0(a0)
@@ -283,7 +225,7 @@ kCode105:
     sd t4 , 0(t2)
     mv t3 , sp
     addi sp , sp , 16
-    la t0 , kCode108
+    la t0 , kCode92
     sd t0 , 0(t3)
     sd t2 , 8(t3)
     mv t2 , sp
@@ -291,7 +233,7 @@ kCode105:
     sd t3 , 0(t2)
     mv t4 , sp
     addi sp , sp , 16
-    la t0 , kCode113
+    la t0 , kCode97
     sd t0 , 0(t4)
     sd t2 , 8(t4)
     mv t2 , sp
@@ -303,7 +245,7 @@ kCode105:
     sd t3 , 16(t2)
     mv t3 , sp
     addi sp , sp , 16
-    la t0 , kCode118
+    la t0 , kCode102
     sd t0 , 0(t3)
     sd t2 , 8(t3)
     mv t2 , zero
@@ -315,20 +257,20 @@ kCode105:
     ld t1 , 8(t3)
     sd t1 , 40(s0)
     ld t0 , 16(s0)
-    beq t0 , zero , block153
-    j block154
-block153:
+    beq t0 , zero , block137
+    j block138
+block137:
     ld t0 , 32(s0)
     mv a0 , t0
     mv a1 , t2
     ld t0 , 24(s0)
     jr t0
-block154:
+block138:
     ld t0 , 40(s0)
     mv a0 , t0
     mv a1 , t2
     jr t4
-kCode100:
+kCode84:
     mv s0 , sp
     addi sp , sp , 8
     ld t2 , 0(a0)
@@ -340,26 +282,26 @@ kCode100:
     mv a0 , t0
     mv a1 , t3
     jr t4
-kCode95:
+kCode79:
     ld t2 , 0(a0)
     ld t3 , 0(t2)
     ld t4 , 8(t2)
     mv a0 , t4
     mv a1 , a1
     jr t3
-kCode138:
+kCode122:
     ld t2 , 0(a0)
     ld t3 , 0(t2)
     ld t4 , 8(t2)
     mv a0 , t4
     mv a1 , a1
     jr t3
-fCode92:
+fCode76:
     mv s0 , sp
     addi sp , sp , 40
     mv t2 , sp
     addi sp , sp , 16
-    la t0 , fCode92
+    la t0 , fCode76
     sd t0 , 0(t2)
     sd a0 , 8(t2)
     ld t3 , 0(a0)
@@ -368,7 +310,7 @@ fCode92:
     sd a1 , 0(t4)
     mv t1 , sp
     addi sp , sp , 16
-    la t0 , kCode95
+    la t0 , kCode79
     sd t0 , 0(t1)
     sd t4 , 8(t1)
     sd t1 , 0(s0)
@@ -378,7 +320,7 @@ fCode92:
     sd t0 , 0(t4)
     mv t1 , sp
     addi sp , sp , 16
-    la t0 , kCode100
+    la t0 , kCode84
     sd t0 , 0(t1)
     sd t4 , 8(t1)
     sd t1 , 8(s0)
@@ -391,7 +333,7 @@ fCode92:
     sd t3 , 24(t4)
     mv t2 , sp
     addi sp , sp , 16
-    la t0 , kCode105
+    la t0 , kCode89
     sd t0 , 0(t2)
     sd t4 , 8(t2)
     mv t3 , zero
@@ -404,28 +346,28 @@ fCode92:
     sd t1 , 24(s0)
     ld t1 , 8(t2)
     sd t1 , 32(s0)
-    beq a2 , zero , block155
-    j block156
-block155:
+    beq a2 , zero , block139
+    j block140
+block139:
     ld t0 , 16(s0)
     mv a0 , t0
     mv a1 , t3
     jr t4
-block156:
+block140:
     ld t0 , 32(s0)
     mv a0 , t0
     mv a1 , t3
     ld t0 , 24(s0)
     jr t0
-kCode145:
+kCode129:
     mv a0 , a1
     j halt
-fCode89:
+fCode73:
     mv s0 , sp
     addi sp , sp , 8
     mv t2 , sp
     addi sp , sp , 16
-    la t0 , fCode89
+    la t0 , fCode73
     sd t0 , 0(t2)
     sd a0 , 8(t2)
     mv t2 , sp
@@ -433,7 +375,7 @@ fCode89:
     sd a2 , 0(t2)
     mv t3 , sp
     addi sp , sp , 16
-    la t0 , fCode92
+    la t0 , fCode76
     sd t0 , 0(t3)
     sd t2 , 8(t3)
     mv t2 , sp
@@ -441,7 +383,7 @@ fCode89:
     sd a1 , 0(t2)
     mv t4 , sp
     addi sp , sp , 16
-    la t0 , kCode138
+    la t0 , kCode122
     sd t0 , 0(t4)
     sd t2 , 8(t4)
     ld t2 , 0(t3)
@@ -452,29 +394,26 @@ fCode89:
     mv a1 , t4
     mv a2 , a2
     jr t2
-fCode46:
-    mv s0 , sp
-    addi sp , sp , 8
+fCode40:
     mv t2 , sp
     addi sp , sp , 16
-    la t0 , fCode46
+    la t0 , fCode40
     sd t0 , 0(t2)
     sd a0 , 8(t2)
     mv t3 , sp
-    addi sp , sp , 24
-    sd t2 , 0(t3)
-    sd a1 , 8(t3)
-    sd a2 , 16(t3)
+    addi sp , sp , 32
+    sd a3 , 0(t3)
+    sd t2 , 8(t3)
+    sd a1 , 16(t3)
+    sd a2 , 24(t3)
     mv t2 , sp
     addi sp , sp , 16
-    la t0 , kCode49
+    la t0 , kCode43
     sd t0 , 0(t2)
     sd t3 , 8(t2)
-    ld t3 , 0(a2)
-    ld t4 , 0(t2)
-    ld t1 , 8(t2)
-    sd t1 , 0(s0)
-    ld t0 , 0(s0)
-    mv a0 , t0
-    mv a1 , t3
-    jr t4
+    ld t3 , 0(a3)
+    ld t4 , 8(a3)
+    mv a0 , t4
+    mv a1 , t2
+    mv a2 , a2
+    jr t3

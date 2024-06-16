@@ -9,12 +9,12 @@ freeF :: CPS.CTm -> Set Ident
 freeF (CPS.LetVal x v k) = (freeF k \\ singleton x) `union` freeH v
 freeF (CPS.LetProj x _ y k) = (freeF k \\ singleton x) `union` singleton y
 freeF (CPS.LetCont k x k1 k2) = (freeF k1 \\ singleton x) `union` (freeF k2 \\ singleton k)
-freeF (CPS.ContApp k x) = fromList [k, x]
-freeF (CPS.FuncApp f k x) = fromList [f, k, x]
+freeF (CPS.ContApp k x) = fromList (k : x)
+freeF (CPS.FuncApp f k x) = fromList ([f, k] ++ x)
 freeF (CPS.Case x k1 k2) = fromList [x, k1, k2]
 freeF (CPS.LetPrim x _ ys k) = (freeF k \\ singleton x) `union` fromList ys
 freeF (CPS.If0 x k1 k2) = fromList [x, k1, k2]
-freeF (CPS.LetFix f k x k1 k2) = (freeF k1 \\ fromList [f, k, x]) `union` (freeF k2 \\ singleton f)
+freeF (CPS.LetFix f k x k1 k2) = (freeF k1 \\ fromList ([f, k] ++ x)) `union` (freeF k2 \\ singleton f)
 freeF (CPS.Halt x) = singleton x
 
 freeH :: CPS.CVal -> Set Ident
@@ -83,17 +83,17 @@ cloConv (CPS.FuncApp f k x) = do
 cloConv (CPS.Case x k1 k2) = do
   x1 <- fresh "x"
   x2 <- fresh "x"
-  clokx1 <- cloConv (CPS.ContApp k1 x1)
-  clokx2 <- cloConv (CPS.ContApp k2 x2)
+  clokx1 <- cloConv (CPS.ContApp k1 [x1])
+  clokx2 <- cloConv (CPS.ContApp k2 [x2])
   return (Case x (k1, clokx1) (k2, clokx2))
 cloConv (CPS.LetPrim x op ys k) = LetPrim x op ys <$> cloConv k
 cloConv (CPS.If0 x k1 k2) = do
   x1 <- fresh "x"
-  clokx1 <- cloConv (CPS.ContApp k1 x1)
-  clokx2 <- cloConv (CPS.ContApp k2 x1)
+  clokx1 <- cloConv (CPS.ContApp k1 [x1])
+  clokx2 <- cloConv (CPS.ContApp k2 [x1])
   return (LetVal x1 Unit (If0 x clokx1 clokx2))
 cloConv (CPS.LetFix f k x k1 k2) = do
-  let ys = toList (freeF k1 \\ fromList [f, k, x])
+  let ys = toList (freeF k1 \\ fromList ([f, k] ++ x))
   fCode <- fresh "fCode"
   env <- fresh "env"
   env1 <- fresh "env"
