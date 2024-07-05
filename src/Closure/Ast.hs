@@ -14,7 +14,7 @@ data CloTm
   = LetVal X CloVal CloTm
   | LetProj X Int X CloTm
   | LetCont K Env X CloTm CloTm
-  | ContApp K Env [X]
+  | ContApp K Env X
   | FuncApp F Env K [X]
   | Case X (X, CloTm) (X, CloTm)
   | LetPrim X PrimOp [X] CloTm

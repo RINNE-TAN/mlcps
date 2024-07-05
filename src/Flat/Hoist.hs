@@ -39,7 +39,7 @@ hoistExpr (Cl.LetCont k env x k1 k2) = do
   let fk = Func k [env, x] b1 e1
   return (f1 ++ f2 ++ [fk], b2, e2)
 hoistExpr (Cl.ContApp k env x) = do
-  return ([], [], App k (env : x))
+  return ([], [], App k [env, x])
 hoistExpr (Cl.FuncApp f env k x) = do
   return ([], [], App f ([env, k] ++ x))
 hoistExpr (Cl.Case x (x1, k1) (x2, k2)) = do
