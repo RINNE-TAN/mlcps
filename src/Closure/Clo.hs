@@ -13,7 +13,7 @@ freeF (CPS.ContApp k x) = fromList [k, x]
 freeF (CPS.FuncApp f k x) = fromList ([f, k] ++ x)
 freeF (CPS.Case x k1 k2) = fromList [x, k1, k2]
 freeF (CPS.LetPrim x _ ys k) = (freeF k \\ singleton x) `union` fromList ys
-freeF (CPS.If0 x k1 k2) = fromList [x, k1, k2]
+freeF (CPS.If0 x k1 k2) = singleton x `union` freeF k1 `union` freeF k2
 freeF (CPS.LetFix f k x k1 k2) = (freeF k1 \\ fromList ([f, k] ++ x)) `union` (freeF k2 \\ singleton f)
 freeF (CPS.Halt x) = singleton x
 
@@ -87,11 +87,7 @@ cloConv (CPS.Case x k1 k2) = do
   clokx2 <- cloConv (CPS.ContApp k2 x2)
   return (Case x (k1, clokx1) (k2, clokx2))
 cloConv (CPS.LetPrim x op ys k) = LetPrim x op ys <$> cloConv k
-cloConv (CPS.If0 x k1 k2) = do
-  x1 <- fresh "x"
-  clokx1 <- cloConv (CPS.ContApp k1 x1)
-  clokx2 <- cloConv (CPS.ContApp k2 x1)
-  return (LetVal x1 Unit (If0 x clokx1 clokx2))
+cloConv (CPS.If0 x k1 k2) = If0 x <$> cloConv k1 <*> cloConv k2
 cloConv (CPS.LetFix f k x k1 k2) = do
   let ys = toList (freeF k1 \\ fromList ([f, k] ++ x))
   fCode <- fresh "fCode"

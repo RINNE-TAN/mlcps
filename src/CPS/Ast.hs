@@ -16,7 +16,7 @@ data CTm
   | FuncApp F K [X]
   | Case X K K
   | LetPrim X PrimOp [X] CTm
-  | If0 X K K
+  | If0 X CTm CTm
   | LetFix F K [X] CTm CTm
   | Halt X
   deriving (Show)

@@ -112,30 +112,7 @@ transCont ml cont = transContH ml
       transCont
         e
         ( \z -> do
-            x0 <- fresh "x"
-            x1 <- fresh "x"
-            x2 <- fresh "x"
-            k0 <- fresh "k"
-            k1 <- fresh "k"
-            k2 <- fresh "k"
-            kx0 <- cont x0
-            z1 <- transCont e1 (return . ContApp k0)
-            z2 <- transCont e2 (return . ContApp k0)
-            return
-              ( LetCont
-                  k0
-                  x0
-                  kx0
-                  ( LetCont
-                      k1
-                      x1
-                      z1
-                      ( LetCont
-                          k2
-                          x2
-                          z2
-                          (If0 z k1 k2)
-                      )
-                  )
-              )
+            z1 <- transCont e1 cont
+            z2 <- transCont e2 cont
+            return (If0 z z1 z2)
         )
